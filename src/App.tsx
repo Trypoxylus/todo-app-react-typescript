@@ -31,6 +31,31 @@ function App() {
     setInputValue("");
   };
 
+  const handleEdit = (id: number, inputValue: string) => {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        todo.inputValue = inputValue;
+      }
+      return todo;
+    });
+    setTodos(newTodos);
+  };
+
+  const handleChecked = (id: number, checked: boolean) => {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        todo.checked = !checked;
+      }
+      return todo;
+    });
+    setTodos(newTodos);
+  };
+
+  const handleDelete = (id: number) => {
+    const newTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(newTodos);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
@@ -45,6 +70,7 @@ function App() {
                 type="text"
                 onChange={(e) => handleChange(e)}
                 className="inputText"
+                value={inputValue} //これがないと追加後もテキストが入ったまま
               />
               <input
                 type="submit"
@@ -62,7 +88,20 @@ function App() {
         </div>
         <ul>
           {todos.map((todo) => (
-            <li key={todo.id}>{todo.inputValue}</li>
+            <li key={todo.id}>
+              <input
+                type="text"
+                onChange={(e) => handleEdit(todo.id, e.target.value)}
+                className="inputText"
+                value={todo.inputValue}
+                disabled={todo.checked}
+              />
+              <input
+                type="checkbox"
+                onChange={(e) => handleChecked(todo.id, todo.checked)}
+              />
+              <button onClick={() => handleDelete(todo.id)}>Delete</button>
+            </li>
           ))}
         </ul>
       </div>
